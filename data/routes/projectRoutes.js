@@ -40,7 +40,7 @@ projectRoutes.get('/', (req, res) => {
     })
 });
 
-// Updates the project with specific ID
+// Updates the project with specific project ID
 //---------------------------------------------------------------------------------//
 
 projectRoutes.put('/:id', checkProjectID, (req, res) => {
@@ -65,7 +65,7 @@ projectRoutes.put('/:id', checkProjectID, (req, res) => {
     }
 });
 
-// Destroy the project with specific ID
+// Destroy the project with specific project ID
 //---------------------------------------------------------------------------------//
 
 projectRoutes.delete('/:id', checkProjectID, (req, res) => {
@@ -84,7 +84,7 @@ projectRoutes.delete('/:id', checkProjectID, (req, res) => {
 
 // The `projectModel.js` helper includes an extra method called `getProjectActions()` that takes a _project id_ as 
 // it's only argument and returns a list of all the _actions_ for the _project_. so /1/actions from /:id/actions
-
+// Gets all actions for a specific project ID
 //---------------------------------------------------------------------------------//
 
 projectRoutes.get('/:id/actions', checkProjectID, (req, res) => {
@@ -107,6 +107,7 @@ projectRoutes.get('/:id/actions', checkProjectID, (req, res) => {
 
 // Middleware
 // Checks if the ID in params exists in database
+
 function checkProjectID (req, res, next) {
     const {id} = req.params;
 
@@ -122,5 +123,7 @@ function checkProjectID (req, res, next) {
         res.status(500).json({message: "Error getting project.", err})
     })
 }
+
+//---------------------------------------------------------------------------------//
 
 module.exports = projectRoutes;
