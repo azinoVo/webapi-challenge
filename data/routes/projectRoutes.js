@@ -44,14 +44,40 @@ projectRoutes.get('/', (req, res) => {
 //---------------------------------------------------------------------------------//
 
 projectRoutes.put('/:id', checkProjectID, (req, res) => {
-    res.send("MADE IT PAST MIDDLEWARE INTO PUT")
+    const {name, description} = req.body;
+    const {id} = req.params;
+
+    const project = {
+        name: name,
+        description: description
+    }
+
+    if (!name || !description) {
+        res.status(400).json({message: "Name or Description is missing, please provide."});
+    } else {
+        db.update(id, project)
+        .then(project => {
+            res.status(201).json({message: "Update Successful", project});
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error adding project.", err});
+        })
+    }
 });
 
 // Destroy the project with specific ID
 //---------------------------------------------------------------------------------//
 
 projectRoutes.delete('/:id', checkProjectID, (req, res) => {
+    const {id} = req.params;
 
+    db.remove(id)
+    .then(count => {
+        res.status(200).json({message: "Destruction inevitable.", count})
+    })
+    .catch(err => {
+        res.status(500).json({message: "Error destroying project.", err});
+    })
 });
 
 //---------------------------------------------------------------------------------//
@@ -62,13 +88,25 @@ projectRoutes.delete('/:id', checkProjectID, (req, res) => {
 //---------------------------------------------------------------------------------//
 
 projectRoutes.get('/:id/actions', checkProjectID, (req, res) => {
+    const {id} = req.params;
 
+    db.getProjectActions(id)
+    .then(actions => {
+        if (actions.length > 0) {
+            res.status(200).json({message: "Actions available.", actions});
+        } else {
+            res.status(404).json({message: "No actions for this project."});
+        }
+    })
+    .catch(err => {
+        res.status(500).json({message: "Error getting actions for this project.", err});
+    })
 });
 
 //---------------------------------------------------------------------------------//
 
 // Middleware
-
+// Checks if the ID in params exists in database
 function checkProjectID (req, res, next) {
     const {id} = req.params;
 
