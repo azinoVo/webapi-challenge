@@ -34,6 +34,7 @@ projectRoutes.get('/', (req, res) => {
     db.get()
     .then(projects => {
         res.status(200).json({message: "Get Success.", projects})
+
     })
     .catch(err => {
         res.status(404).json({message: "Get Failure.", err})
